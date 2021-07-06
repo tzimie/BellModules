@@ -8,5 +8,7 @@ Services Manual|WinServices|html|$tags~filter=Manual
 Services Disabled|WinServices|html|$tags~filter=Disabled
 Services Automatic Stopped|WinServices|html|$tags~filter=AutoStopped
 Disk Drives|WinDrives|html|$tags
+Process List|WinProcess|html|$tags
+Process CPU delta|WinProcessDelta|html|$tags
 "@  
 
