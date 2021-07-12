@@ -47,7 +47,7 @@ select DatabaseName,
   start_time,wait_time,wait_type,isnull(#p2.statement_text,'') as SQL from #p1 left outer join #p2 on #p1.spid=#p2.spid
 "@
 
-$conn = $tagval.Conn -Replace '{sem}', ';' -Replace '{eq}','=' -Replace '{comma}',',' -Replace '{', '''' -Replace '}', '''' 
+$conn = $tagval.Conn 
 $d = MSSQLquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
 $html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>SQL server locks in progress right now</h2>' 
 $html = $html -Replace '<td>{(.*?)}', '<td class="X-$1">'

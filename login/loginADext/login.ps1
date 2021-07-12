@@ -9,7 +9,7 @@ if (-not $DS.ValidateCredentials($usr, $psw))
   exit 1
   }
 
-# this is our company specific rules
+# this is our company specific rules - replace !!!!!!!!!!!
 $admins = ('Admins')
 $allowedSQLmodifs = ('SQLDBA','IT guys')
 $allowedSQLreadonly = ('Development','Consulters')
@@ -18,20 +18,20 @@ $RW = '' # can do all ops
 $RO = '' # can query
 
 # Get all groups where user belongs
-#$res = Get-ADPrincipalGroupMembership -Server 'paladyne.com' -identity $usr
-#foreach ($g in $res) {
-#  if ($g.name -in $admins)             { $IT = 'Y' }
-#  if ($g.name -in $allowedSQLmodifs)   { $RW = 'Y' }
-#  if ($g.name -in $allowedSQLreadonly) { $RO = 'Y' }
-#  }
-#$groups = 'guest'
-#if ($RW -eq 'Y') { $groups = $groups + ';RW' }
-#if ($RO -eq 'Y' -or $RW -eq 'Y') { $groups = $groups + ';RO' }
-#if ($IT -eq 'Y') { $groups = 'RO;RW;IT' }
+$res = Get-ADPrincipalGroupMembership -Server 'company.com' -identity $usr # replace here company.com !!!!!!!!!!!!!!!
+foreach ($g in $res) {
+  if ($g.name -in $admins)             { $IT = 'Y' }
+  if ($g.name -in $allowedSQLmodifs)   { $RW = 'Y' }
+  if ($g.name -in $allowedSQLreadonly) { $RO = 'Y' }
+  }
+$groups = 'guest'
+if ($RW -eq 'Y') { $groups = $groups + ';RW' }
+if ($RO -eq 'Y' -or $RW -eq 'Y') { $groups = $groups + ';RO' }
+if ($IT -eq 'Y') { $groups = 'RO;RW;IT' }
 
 #line 1, return groups
-'RO;RW'
+$groups
 
 #returns root elements, always in the format: friendly name,class,type,tags
-'BIMS|BIMS|folder|'
+'ROOT|ROOT|folder|'
 

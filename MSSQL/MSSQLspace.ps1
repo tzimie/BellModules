@@ -67,7 +67,7 @@ drop table #tt
 drop table #ttr
 "@
 
-$conn = $tagval.Conn -Replace '{sem}', ';' -Replace '{eq}','=' -Replace '{comma}',',' -Replace '{', '''' -Replace '}', '''' 
+$conn = $tagval.Conn 
 $d = MSSQLquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
 $html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Database sizes and free space inside</h2>' 
 $html

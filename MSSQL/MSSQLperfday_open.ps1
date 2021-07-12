@@ -2,7 +2,7 @@ param ([string]$usr, [string]$grp, [string]$name, [string]$tags)
 . $PSScriptRoot/MSSQLquery.ps1
 parse $tags
 
-$conn = $tagval.Conn -Replace '{sem}', ';' -Replace '{eq}','=' -Replace '{comma}',',' -Replace '{', '''' -Replace '}', '''' 
+$conn = $tagval.Conn
 $day = $tagval.day
 
 @"

@@ -1,7 +1,6 @@
 param ([string]$usr, [string]$grp, [string]$name, [string]$tags) 
-. $PSScriptRoot/MSSQLquery.ps1
+. $PSScriptRoot/pgODBC.ps1
 parse $tags
-$day = $tagval.day
 
 $Header = @"
 <style>
@@ -16,16 +15,11 @@ TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
 "@  
 
 $q = @"
-select (select Name from ReportServer.dbo.Catalog where ItemID=ReportID) as Name,
-  UserName,Format,TimeStart,TimeEnd,datediff(ss,TimeStart,TimeEnd) as Seconds,
-  case when Status<>'rsSuccess' then '{red}' else '' end +Status as Status,ByteCount,[RowCount] 
-  from ReportServer.dbo.ExecutionLogStorage
-  where TimeStart>=convert(datetime,'$day') and TimeStart<convert(datetime,'$day')+1
-  order by TimeStart
+select * from pg_stat_database;
 "@
 
 $conn = $tagval.Conn 
-$d = MSSQLquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
-$html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>MSRS report</h2>' 
+$d = ODBCquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
+$html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Current server conenctions</h2>' 
 $html = $html -Replace '<td>{(.*?)}', '<td class="X-$1">'
 $html

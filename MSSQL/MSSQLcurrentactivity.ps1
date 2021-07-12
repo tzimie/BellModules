@@ -61,7 +61,7 @@ select D.name as dbname,SQLCMD,case when delta>9000 then '{red}' when delta>5000
   order by delta desc
 "@
 
-$conn = $tagval.Conn -Replace '{sem}', ';' -Replace '{eq}','=' -Replace '{comma}',',' -Replace '{', '''' -Replace '}', '''' 
+$conn = $tagval.Conn 
 $d = MSSQLquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
 $html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>SQL server activity for 15 sec interval</h2>' 
 $html = $html -Replace '<td>{(.*?)}', '<td class="X-$1">'

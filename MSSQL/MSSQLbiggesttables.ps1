@@ -38,6 +38,6 @@ ORDER BY
     3 desc 
 "@
 
-$conn = $tagval.Conn -Replace '{sem}', ';' -Replace '{eq}','=' -Replace '{comma}',',' -Replace '{', '''' -Replace '}', '''' 
+$conn = $tagval.Conn 
 $d = MSSQLquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
 $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Top 30 tables, by row count, desc</h2>' 

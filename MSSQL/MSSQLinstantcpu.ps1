@@ -2,7 +2,7 @@ param ([string]$usr, [string]$grp, [string]$name, [string]$tags)
 . $PSScriptRoot/MSSQLquery.ps1
 parse $tags
 
-$conn = $tagval.Conn -Replace '{sem}', ';' -Replace '{eq}','=' -Replace '{comma}',',' -Replace '{', '''' -Replace '}', '''' 
+$conn = $tagval.Conn 
 $q = @"
 DECLARE @ts_now bigint = (SELECT cpu_ticks/(cpu_ticks/ms_ticks) FROM sys.dm_os_sys_info WITH (NOLOCK)); 
 SELECT TOP(256) 
