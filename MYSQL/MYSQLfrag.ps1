@@ -1,25 +1,30 @@
 param ([string]$usr, [string]$grp, [string]$name, [string]$tags) 
-. $PSScriptRoot/pgODBC.ps1
+. $PSScriptRoot/ODBC.ps1
 parse $tags
+if (-not $tagval.Conn) { exit }
+
+$conn = $tagval.Conn 
+$table = $tagval.table
 
 $Header = @"
 <style>
-.X-red { color: red; background-color: yellow; }
-.X-green { color: green; background-color: white; }
-.X-yellow { color: black; background-color: #FFFFE0; }
-.X-default { color: black; background-color: white; }
 TABLE {border-width: 1px; border-style: solid; border-color: black; border-collapse: collapse;}
 TH {border-width: 1px; padding: 3px; border-style: solid; border-color: black; background-color: #6495ED;}
 TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
 </style>
-"@  
-
-$q = @"
-select * from pg_stat_database;
 "@
 
-$conn = $tagval.Conn 
+$q = @"
+select  
+  ENGINE, 
+  Round( DATA_LENGTH/1024/1024) as data_length, 
+  round(INDEX_LENGTH/1024/1024) as index_length, 
+  round(DATA_FREE/ 1024/1024) as data_free,
+  (data_free/(index_length+data_length)) as frag_ratio
+  from information_schema.tables  
+  where TABLE_NAME='$table';
+"@
+
 $d = ODBCquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
-$html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Database stats</h2>' 
-$html = $html -Replace '<td>{(.*?)}', '<td class="X-$1">'
-$html
+$d | ConvertTo-HTML -Title "Rows" -Head $Header -body "<h2>$table size and fragmentation</h2>" 
+

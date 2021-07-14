@@ -1,5 +1,5 @@
 param ([string]$usr, [string]$grp, [string]$name, [string]$tags) 
-. $PSScriptRoot/pgODBC.ps1
+. $PSScriptRoot/ODBC.ps1
 parse $tags
 
 $Header = @"
@@ -14,24 +14,9 @@ TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
 </style>
 "@  
 
-$q = @"
-SELECT 
-    pid
-    ,datname
-    ,usename
-    ,application_name
-    ,client_hostname
-    ,client_port
-    ,backend_start
-    ,query_start
-    ,query  
-FROM pg_stat_activity
-WHERE state <> 'idle'
-  AND pid<>pg_backend_pid();
-"@
+$q = "select * from performance_schema.metadata_locks;"
 
 $conn = $tagval.Conn 
 $d = ODBCquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
-$html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Current server connections</h2>' 
-$html = $html -Replace '<td>{(.*?)}', '<td class="X-$1">'
+$html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Current server locks</h2>' 
 $html

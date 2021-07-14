@@ -16,6 +16,6 @@ TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
 
 $conn = $tagval.Conn 
 $d = ODBCquery $conn "select * from pg_locks;" | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
-$html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Current server conenctions</h2>' 
+$html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Current server locks</h2>' 
 $html = $html -Replace '<td>{(.*?)}', '<td class="X-$1">'
 $html

@@ -1,5 +1,5 @@
 param ([string]$usr, [string]$grp, [string]$name, [string]$tags) 
-. $PSScriptRoot/pgODBC.ps1
+. $PSScriptRoot/ODBC.ps1
 parse $tags
 
 $Header = @"
@@ -14,24 +14,16 @@ TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
 </style>
 "@  
 
-$q = @"
-SELECT 
-    pid
-    ,datname
-    ,usename
-    ,application_name
-    ,client_hostname
-    ,client_port
-    ,backend_start
-    ,query_start
-    ,query  
-FROM pg_stat_activity
-WHERE state <> 'idle'
-  AND pid<>pg_backend_pid();
-"@
-
 $conn = $tagval.Conn 
+$day1 = $tagval.day
+[datetime] $dt = $day1
+$day2 = $dt.AddDays(1).ToString('yyyy-MM-dd')
+
+$q = "select * from performance_schema.error_log where LOGGED>='$day1' and LOGGED<'$day2'"
+
 $d = ODBCquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
-$html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Current server connections</h2>' 
-$html = $html -Replace '<td>{(.*?)}', '<td class="X-$1">'
+$html = $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Events in error log</h2>' 
+$html = $html -Replace '<td>Error</td>', '<td class="X-error">Error</td>'
+$html = $html -Replace '<td>Warning</td>', '<td class="X-yellow">Warning</td>'
+$html = $html -Replace '<td>System</td>', '<td class="X-green">System</td>'
 $html
