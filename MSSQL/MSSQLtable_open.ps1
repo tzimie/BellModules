@@ -15,4 +15,5 @@ foreach ($s in $d) {
 @"
 Fragmentation report|MSSQLfrag|html|$tags
 Column selectivity report|MSSQLselectivity|html|$tags
+Index coverage|MSSQLindexing|html|$tags
 "@

@@ -9,6 +9,7 @@ $table = $tagval.table
 @"
 Size and fragmentation|MYSQLfrag|html|$tags
 Selectivity|MYSQLselectivity|html|$tags
+Index coverage|MYSQLindexing|html|$tags
 "@
 
 $d = ODBCquery $conn @"

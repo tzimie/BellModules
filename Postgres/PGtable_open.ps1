@@ -10,6 +10,7 @@ $table = $tagval.table
 @"
 Tuple fragmentation|PGfrag|html|$tags
 Selectivity|PGselectivity|html|$tags
+Index coverage|PGindexing|html|$tags
 "@
 
 $d = ODBCquery $conn "SELECT column_name FROM information_schema.columns WHERE table_schema='$schema' and table_name='$table' and data_type like 'time%';"
