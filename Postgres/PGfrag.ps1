@@ -15,6 +15,7 @@ TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
 </style>
 "@
 
-$q = "SELECT *FROM pgstattuple('$schema.$table');"
+# CREATE EXTENSION pgstattuple;
+$q = "SELECT * FROM pgstattuple('$schema.$table');"
 $d = ODBCquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"
 $d | ConvertTo-HTML -Title "Rows" -Head $Header -body '<h2>Table fragmentation</h2>' 

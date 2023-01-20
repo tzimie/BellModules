@@ -4,7 +4,7 @@ parse $tags
 
 $conn = $tagval.Conn 
 $q = @"
-select sum(count_fetch) as fetches, sum(count_write) as writes
+select ifnull(sum(count_fetch),0) as fetches, ifnull(sum(count_write),0) as writes
   from performance_schema.table_io_waits_summary_by_table 
   where object_schema=database();
 "@

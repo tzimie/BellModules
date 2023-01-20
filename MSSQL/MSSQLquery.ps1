@@ -38,7 +38,7 @@ function MSSQLchart([string] $connstr, [string]$sql)
     $cols = ''
     for ($n=0; $n -lt $len; $n++) {
       if ($cols -ne '') { $cols = $cols + ',' }
-      if ($n -eq 0) { $cols = $cols + $row[$n].ToString('yyy-MM-ddThh:mm:ss') }
+      if ($n -eq 0) { $cols = $cols + $row[$n].ToString('yyyy-MM-ddThh:mm:ss') }
       else { $cols = $cols + $row[$n] }
     }
   Write-Host $cols

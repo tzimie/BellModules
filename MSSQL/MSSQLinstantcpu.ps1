@@ -18,7 +18,7 @@ FROM (SELECT record.value('(./Record/@id)[1]', 'int') AS record_id,
 			FROM sys.dm_os_ring_buffers WITH (NOLOCK)
 			WHERE ring_buffer_type = N'RING_BUFFER_SCHEDULER_MONITOR' 
 			AND record LIKE N'%<SystemHealth>%') AS x) AS y 
-ORDER BY 1 DESC OPTION (RECOMPILE);
+ORDER BY 1 OPTION (RECOMPILE);
 "@
 
 @"

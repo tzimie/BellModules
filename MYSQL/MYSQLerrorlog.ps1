@@ -15,10 +15,10 @@ TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
 "@  
 
 $conn = $tagval.Conn 
+
 $day1 = $tagval.day
 [datetime] $dt = $day1
 $day2 = $dt.AddDays(1).ToString('yyyy-MM-dd')
-
 $q = "select * from performance_schema.error_log where LOGGED>='$day1' and LOGGED<'$day2'"
 
 $d = ODBCquery $conn $q | Select-Object -Property * -ExcludeProperty "ItemArray", "RowError", "RowState", "Table", "HasErrors"

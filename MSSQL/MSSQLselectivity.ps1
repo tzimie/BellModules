@@ -33,7 +33,10 @@ BEGIN
 END
 CLOSE cols;
 DEALLOCATE cols;
-select #res.s as [Column], cnt as DistinctValues, @rows/cnt as RowsPerValueAvg, topper as RecordsInMostFreqVal, convert(money,topper*100./@rows) as PctInTop from #res
+select #res.s as [Column], cnt as DistinctValues, 
+  @rows/(case when cnt=0 then 1 else cnt end) as RowsPerValueAvg, 
+  topper as RecordsInMostFreqVal, 
+  convert(money,topper*100./(case when @rows=0 then 1 else @rows)) as PctInTop from #res
   inner join #tp on #tp.s=#res.s
   order by 2 desc
 "@
