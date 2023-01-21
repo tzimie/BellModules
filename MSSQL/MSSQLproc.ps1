@@ -23,10 +23,50 @@ $keywords = @('PROCEDURE', 'ALL', 'FETCH', 'PUBLIC', 'ALTER', 'FILE', 'RAISERROR
   'WRITETEXT', 'EXIT', 'PROC', 'NOCOUNT')
 
 $d = MSSQLquery $conn "exec sp_helptext '$name'"
-'<font face="Lucida Console" size="2">'
+'<font face="Lucida Console" size="3">'
+$code = ''
+[System.Collections.ArrayList] $ecomment = @()
+[System.Collections.ArrayList] $mcomment = @()
+[System.Collections.ArrayList] $textlines = @()
+$eating = 0 # flag that we eat multiline comment
 foreach ($l in $d) {
   $ln = $l.Text
   $ln = $ln.replace("`n","").replace("`r","").replace("`t"," ")
+  if ($eating -gt 0) {
+    if ($ln.Contains('*/')) { # multiline comment ended
+      $forming += $ln.Split('*/')[0] + '*/'
+      $mcomment += $forming
+      $eating = 0
+      $ln = $ln.Split('*/',2)[1]
+    } else { # another line in comment
+      $forming += $ln + "<br>"
+      $ln = '{skip}'
+      }
+    }
+  if ($ln.Contains('--'))
+    {
+    $ecomment += $ln.Split("--",2)[1]
+    $ln = $ln.Split("--",2)[0] + "{e}"
+    }
+  if ($ln.Contains("/*") -and -not $ln.Contains("*/")) { # starting multi line comment
+    $forming = $ln.Split("/*", 2)[1] + "<br>"
+    $ln = $ln.Split("/*",2)[0] + "{m}"
+    $eating = 1
+  }
+  elseif ($ln.Contains("/*")) { # /* */ in a single line
+    while ($ln.Contains("/*")) {
+      $l = $ln.Split('/*', 2)[0]
+      $r = $ln.Split('/*', 2)[1]
+      $forming = $r.Split('*/', 2)[0]
+      $r = $r.Split('*/',2)[1]
+      $ln = $l + '{m}' + $r
+      $mcomment += $forming + '*/'
+      }
+    }
+  if ($ln -ne '{skip}') { $textlines += $ln }
+  }
+
+foreach ($ln in $textlines) {
   foreach ($k in $keywords) {
     $ln = $ln -iReplace "(\W)($k)(\W)", '$1{blue}$2{black}$3'
     $ln = $ln -iReplace "^($k)(\W)", '{blue}$1{black}$2'
@@ -38,6 +78,19 @@ foreach ($l in $d) {
   $ln = $ln -Replace "{blue}", '<font color="blue">'
   $ln = $ln -Replace "{black}", '<font color="black">'
   $ln = $ln -Replace "{green}", '<font color="green">'
-  "$ln<br>"
-}
+  if ($ln.Endswith("{e}")) {
+    $len = $ln.Length
+    $ln = $ln.Substring(0,$len-3) + '<font color="gray">--' + $ecomment[0] + '<font color="black">'
+    $ecomment.RemoveAt(0)
+    }
+  while ($ln.Contains("{m}" )) {
+    $l = $ln.Split("{m}", 2)[0]
+    $r = $ln.Split("{m}", 2)[1]
+    $ln = $l + '<font color="gray">/*' + $mcomment[0] + '<font color="black">' + $r
+    $mcomment.RemoveAt(0)
+    }
+  $code += $ln + '<br>'
+  }
+  "$code<br>"
+
 
