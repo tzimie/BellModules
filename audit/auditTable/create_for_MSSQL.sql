@@ -14,7 +14,7 @@ CREATE TABLE [dbo].[BellAudit](
 	[grp] [varchar](1024) NULL,
 	[name] [varchar](255) NULL,
 	[tags] [varchar](1024) NULL,
-	[execstatus] [int] NULL,
+	[execstatus] varchar(max) NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[n] ASC
@@ -23,7 +23,7 @@ PRIMARY KEY CLUSTERED
 GO
 
 CREATE procedure [dbo].[DoAudit] 
-  @usr varchar(128), @grp varchar(1024), @name varchar(255), @tags varchar(1024), @execstatus int
+  @usr varchar(128), @grp varchar(1024), @name varchar(255), @tags varchar(1024), @execstatus varchar(max)
 as
   set nocount on
   insert into BellAudit (dt, usr,grp,name,tags,execstatus)
