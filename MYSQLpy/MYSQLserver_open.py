@@ -20,6 +20,8 @@ Process list|MYSQLprocesslist|html|{tags}
 Current locks|MYSQLlocks|html|{tags}
 Questions live 30s|MYSQLquestions|chart|{tags}
 Error Log|MYSQLperf|folder|{tags}
+Table and index sizes TreeMap|MYSQLsrvtreemap|html|{tags}
+InnoDB IO by file TreeMap|MYSQLiotreemap|html|{tags}
 InnoDB data reads/writes 30s|MYSQLdataio|chart|{tags}
 InnoDB buffer pool reads/writes 30s|MYSQLpoolio|chart|{tags}
 InnoDB rows operations 30s|MYSQLrows|chart|{tags}""")

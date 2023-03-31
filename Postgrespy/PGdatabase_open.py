@@ -7,6 +7,8 @@ print(f"""Tables|PGtables|folder|{tags}
 Procedures|PGprocs|folder|{tags}
 Functions|PGfuncs|folder|{tags}
 Top 30 tables by size|PGbiggesttables|html|{tags}
+Treemap for table sizes|PGdbtreemap|html|{tags}
+Table IO and cache hits TreeMap|PGtableio|html|{tags}
 Query stats - 10 sec|PGstats10s|html|{tags}
 Chart 30 sec - Transactions|PGtrans|chart|{tags}
 Chart 30 sec - Blocks|PGblocks|chart|{tags}

@@ -4,6 +4,7 @@ from MSSQLquery import *
 usr, grp, name, tags, tagval = bellparams()
 
 print(f"""Top 30 tables by size|MSSQLbiggesttables|html|{tags}
+TreeMap of table and index sizes|MSSQLdbtreemap|html|{tags}
 Tables|MSSQLobjects|folder|{tags}~Obj=U
 Scalar Functions|MSSQLobjects|folder|{tags}~Obj=FN
 Table Functions|MSSQLobjects|folder|{tags}~Obj=TF

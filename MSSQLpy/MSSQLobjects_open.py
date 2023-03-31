@@ -3,7 +3,7 @@ from MSSQLquery import *
 
 usr, grp, name, tags, tagval = bellparams()
 
-dbaname = tagval['dbname']
+dbname = tagval['dbname']
 conn = tagval['Conn']
 obj = tagval['Obj']
 

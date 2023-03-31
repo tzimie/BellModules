@@ -17,6 +17,8 @@ conn = tagval['Conn']
 
 print(f"""Current activity|PGcurrentactivity|html|{tags}
 Current locks|PGlocks|html|{tags}
+Tables size TreeMap|PGsrvtreemap|html|{tags}
+Tables io and cache hits TreeMap|PGtableiosrv|html|{tags}
 Database stats|PGdatabasestats|html|{tags}""")
 
 d = PGquery(conn, "select datname from pg_database;")
