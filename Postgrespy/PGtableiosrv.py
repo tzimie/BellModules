@@ -70,7 +70,7 @@ fig.update_layout(margin = dict(t=50, l=25, r=25, b=25))
 fig.write_image("tabtemp.jpg", width=1080, height=720) # change to png sometimes hangs, blame kaleido
 
 print (f"""<html>
-<h1>TreeMap of relative table and index sizes on a server</h1>
+<h1>TreeMap of relative table io and cache hits on a server</h1>
 <body style="background: black;">
 <img src="tabtemp.jpg">
 </body>
