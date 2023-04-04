@@ -12,7 +12,8 @@ SQL current activity - 10secs|MSSQLcurrentactivity|html|{tags}
 SQL locks in progress|MSSQLlocks|html|{tags}
 SQL active expensive queries|MSSQLactiveq|html|{tags}
 SQL Performance|MSSQLperf|folder|{tags}
-TreeMap or IO per database files|MSSQLiotreemap|html|{tags}
+SQL agent jobs view|MSSQLjobsview|html|{tags}~filter=
+TreeMap of IO per database files|MSSQLiotreemap|html|{tags}
 TreeMap sizes of all databases, tables and indexes|MSSQLsrvtreemap|html|{tags}
 TreeMap database files and drive space|MSSQLdrvtreemap|html|{tags}
 SQL database size and free space|MSSQLspace|html|{tags}"""
@@ -24,4 +25,4 @@ d = MSSQLquery(conn,"select DB_NAME(DbId) as name,sum(BytesOnDisk/1000/1000./100
 for s in d:
   dbname = str(s[0])
   dbsize = float(s[1])
-  print(f'db {dbname} ({dbsize}Gb)|MSSQLdatabase|folder|{tags};Database={dbname}~dbname={dbname}')
+  print(f'db {dbname} ({round(dbsize,2)}Gb)|MSSQLdatabase|folder|{tags};Database={dbname}~dbname={dbname}')
