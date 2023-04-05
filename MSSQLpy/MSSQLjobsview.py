@@ -126,7 +126,7 @@ sortedjobs = sorted(jobtotals.items(), key=lambda x:x[1])
 # PASS 2, drawing
 img = Image.new("RGB", size, "white") 
 imgd = ImageDraw.Draw(img)  
-fnt = ImageFont.truetype("arial.ttf")
+fnt = ImageFont.truetype(sys.path[0]+"/arial.ttf")
 
 # hour grid
 for h in range(0,25,3):
@@ -174,7 +174,8 @@ for k in sortedjobs:
 img.save("jobs.png")
  
 print (f"""<html>
-<h1>Jobs step duration by day and time, red indicating failures</h1>
+<h1>Jobs step duration by day and time, red indicating failures
+</h1>
 <body style="background: black;">
 <img src="jobs.png">
 </body>
