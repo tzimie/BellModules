@@ -18,7 +18,6 @@ where D.Dbid=S.Dbid
 -- loop by dbs
 -- 
 create table #pct (dbname sysname, file_id int, Gbfree float)
-create table #tt (dbname sysname, tab sysname, rowcnt int)
 declare @dbname sysname
 DECLARE db CURSOR FOR SELECT name FROM master.dbo.sysdatabases
   where DATABASEPROPERTYEX(Name, 'Status')='ONLINE'
@@ -29,35 +28,25 @@ OPEN db;
   BEGIN  
      exec('use ['+@dbname+'] insert into #pct select '''+@dbname+''',file_id, (size/128.0 - CAST(FILEPROPERTY(name, ''SpaceUsed'') AS INT)/128.0)/1024.0
           FROM sys.database_files')
-     exec('use ['+@dbname+'] insert into #tt select top 3 '''+@dbname+''',O.name, max(rowcnt) as rowcnt from sysobjects O (nolock)
-          inner join sysindexes I (nolock) on O.id=I.id
-          where O.type=''U'' group by O.name order by 3 desc')
      FETCH NEXT FROM db into @dbname;  
   END  
 CLOSE db;  
 DEALLOCATE db;
-delete from #tt where rowcnt<1000
-update #tt set tab=left(tab,CHARINDEX('_', tab)-1) from #tt where tab like '#%'
-select dbname,tab,rowcnt,row_number() over (partition by dbname order by rowcnt desc) as r into #ttr from #tt
 select name,
   SUM(case when [Type]='Data'  then Gb else 0.0 end) as DataGb,
-  SUM(case when [Type]='Data'  then #pct.Gbfree else 0.0 end) as DataFree,
+  SUM(case when [Type]='Data'  then #pct.Gbfree/(Gb+0.001) else 0.0 end) as DataFree,
   SUM(case when [Type]='Log'   then Gb else 0.0 end) as LogGb,
-  SUM(case when [Type]='Log'   then #pct.Gbfree else 0.0 end) as LogFree,
-  CONVERT(varchar(1024),'') as Tabs
+  SUM(case when [Type]='Log'   then #pct.Gbfree/(Gb+0.001) else 0.0 end) as LogFree
   into #gr 
   from #dbs
   left outer join #pct on #pct.dbname=#dbs.name and #dbs.fileid=#pct.file_id
   group by name
-update #gr set Tabs=#ttr.tab+'('+CONVERT(varchar,#ttr.rowcnt)+')' from #ttr where #ttr.dbname=#gr.name and #ttr.r=1
-update #gr set Tabs=Tabs+', '+#ttr.tab+'('+CONVERT(varchar,#ttr.rowcnt)+')' from #ttr where #ttr.dbname=#gr.name and #ttr.r=2
-update #gr set Tabs=Tabs+', '+#ttr.tab+'('+CONVERT(varchar,#ttr.rowcnt)+')' from #ttr where #ttr.dbname=#gr.name and #ttr.r=3"""
+"""
 
 q1 = """select name,convert(money,round(DataGb,3)) as DataGb,
-       round(100*DataFree/(DataGb+0.001),2) as PctFree,
+       round(100*DataFree,2) as PctFree,
        convert(money,round(LogGb,3)) as LogGb,
-       round(100*LogFree/(LogGb+0.001),2) as PctFree,
-       tabs as BiggestTables
+       round(100*LogFree,2) as PctFree
        from #gr order by (DataGb+LogGb) desc"""
 
 conn = tagval['Conn']

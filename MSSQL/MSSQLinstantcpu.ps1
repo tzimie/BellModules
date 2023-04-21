@@ -7,8 +7,7 @@ $q = @"
 DECLARE @ts_now bigint = (SELECT cpu_ticks/(cpu_ticks/ms_ticks) FROM sys.dm_os_sys_info WITH (NOLOCK)); 
 SELECT TOP(256) 
                DATEADD(ms, -1 * (@ts_now - [timestamp]), GETDATE()) AS [DT],
-			   SQLProcessUtilization AS [SQLCPU], 
-               100 - SystemIdle - SQLProcessUtilization AS [OtherCPU]
+			   SQLProcessUtilization AS [SQLCPU]
 FROM (SELECT record.value('(./Record/@id)[1]', 'int') AS record_id, 
 			record.value('(./Record/SchedulerMonitorEvent/SystemHealth/SystemIdle)[1]', 'int') 
 			AS [SystemIdle], 
